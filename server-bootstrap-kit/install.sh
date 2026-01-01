@@ -10,6 +10,12 @@ echo "=============================="
 echo " Linux Server Bootstrap Kit"
 echo "=============================="
 
+
+chmod +x security/*.sh
+chmod +x monitoring/*.sh
+chmod +x backup/*.sh
+
+
 echo "[STEP 1] Updating system packages..."
 apt update && apt upgrade -y
 
