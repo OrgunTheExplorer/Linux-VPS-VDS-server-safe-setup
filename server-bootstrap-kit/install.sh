@@ -44,4 +44,22 @@ systemctl restart ssh
 systemctl restart ufw
 systemctl restart fail2ban
 
+
+read -p "[STEP 8] Install backup system? (y/n): " INSTALL_BACKUP
+if [[ "$INSTALL_BACKUP" == "y" ]]; then
+    chmod +x backup/daily_backup.sh
+    (crontab -l 2>/dev/null; echo "0 3 * * * $(pwd)/backup/daily_backup.sh >> /var/log/backup.log 2>&1") | crontab -
+    echo "Backup system installed."
+fi
+
+
+
+read -p "[STEP 9] Install monitoring alerts? (y/n): " INSTALL_MONITOR
+if [[ "$INSTALL_MONITOR" == "y" ]]; then
+    chmod +x monitoring/resource_alert.sh
+    (crontab -l 2>/dev/null; echo "*/5 * * * * $(pwd)/monitoring/resource_alert.sh") | crontab -
+    echo "Monitoring alerts installed."
+fi
+
+
 echo "✅ Server bootstrap completed safely."
