@@ -44,7 +44,6 @@ cd Linux-VPS-VDS-server-safe-setup/server-bootstrap-kit
 4️⃣ Give EXEC permission to the scripts
 ```bash
 chmod +x install.sh
-chmod +x security/*.sh
 ```
 
 
