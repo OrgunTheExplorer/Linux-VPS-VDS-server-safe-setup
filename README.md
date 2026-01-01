@@ -52,8 +52,14 @@ chmod +x install.sh
 sudo ./install.sh
 ```
 
-6️⃣Paste your ssh key in the local machine can be seen with 1️⃣ step
+6️⃣Paste your ssh key in the local machine can be seen with step 1️⃣
 
 
 7️⃣ Choose to enable or disable the ipv6
+
+
+8️⃣ Choose to enable or disable backup
+
+
+9️⃣ Choose to enable or disable monitoring tools
 
