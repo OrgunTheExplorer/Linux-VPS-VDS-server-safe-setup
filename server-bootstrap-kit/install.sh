@@ -12,8 +12,6 @@ echo "=============================="
 
 
 chmod +x security/*.sh
-chmod +x monitoring/*.sh
-chmod +x backup/*.sh
 
 
 echo "[STEP 1] Updating system packages..."
@@ -56,7 +54,7 @@ fi
 
 read -p "[STEP 9] Install monitoring alerts? (y/n): " INSTALL_MONITOR
 if [[ "$INSTALL_MONITOR" == "y" ]]; then
-    chmod +x monitoring/resource_alert.sh
+    chmod +x monitoring/*.sh
     (crontab -l 2>/dev/null; echo "*/5 * * * * $(pwd)/monitoring/resource_alert.sh") | crontab -
     echo "Monitoring alerts installed."
 fi
