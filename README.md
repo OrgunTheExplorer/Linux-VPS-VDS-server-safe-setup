@@ -40,16 +40,21 @@ git clone https://github.com/OrgunTheExplorer/Linux-VPS-VDS-server-safe-setup.gi
 cd Linux-VPS-VDS-server-safe-setup/server-bootstrap-kit
 ```
 
+
 4️⃣ Give EXEC permission to the scripts
 ```bash
 chmod +x install.sh
 chmod +x security/*.sh
 ```
+
+
 5️⃣ And run the program
 ```bash
 sudo ./install.sh
 ```
 
 6️⃣Paste your ssh key in the local machine can be seen with 1️⃣ step
+
+
 7️⃣ Choose to enable or disable the ipv6
 
