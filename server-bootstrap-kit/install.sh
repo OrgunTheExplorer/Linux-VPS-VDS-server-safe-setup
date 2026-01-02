@@ -42,6 +42,7 @@ systemctl restart fail2ban
 
 
 # ---------------- BACKPORT ----------------
+echo "[STEP 8] Installing backport tools..."
 if [ ! -f tools/backport.sh ]; then
     echo "❌ tools/backport not found. Skipping backport install."
 else
