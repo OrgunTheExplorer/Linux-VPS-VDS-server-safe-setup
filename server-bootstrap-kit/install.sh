@@ -42,16 +42,14 @@ systemctl restart fail2ban
 
 
 # ---------------- BACKPORT ----------------
-read -p "[STEP 8] Install backport CLI tool? (y/n): " INSTALL_BACKPORT
-if [[ "$INSTALL_BACKPORT" == "y" ]]; then
-    if [ ! -f tools/backport ]; then
-        echo "❌ tools/backport not found. Skipping backport install."
-    else
-        chmod +x tools/backport
-        cp tools/backport /usr/local/bin/backport
-        echo "✅ backport installed to /usr/local/bin/backport"
-    fi
+if [ ! -f tools/backport ]; then
+    echo "❌ tools/backport not found. Skipping backport install."
+else
+    chmod +x tools/backport
+    cp tools/backport /usr/local/bin/backport
+    echo "✅ backport installed to /usr/local/bin/backport"
 fi
+
 
 
 # ---------------- BACKUP ----------------
