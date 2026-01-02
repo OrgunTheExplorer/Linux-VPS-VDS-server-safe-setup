@@ -42,11 +42,11 @@ systemctl restart fail2ban
 
 
 # ---------------- BACKPORT ----------------
-if [ ! -f tools/backport ]; then
+if [ ! -f tools/backport.sh ]; then
     echo "❌ tools/backport not found. Skipping backport install."
 else
-    chmod +x tools/backport
-    cp tools/backport /usr/local/bin/backport
+    chmod +x tools/backport.sh
+    cp tools/backport.sh /usr/local/bin/backport.sh
     echo "✅ backport installed to /usr/local/bin/backport"
 fi
 
