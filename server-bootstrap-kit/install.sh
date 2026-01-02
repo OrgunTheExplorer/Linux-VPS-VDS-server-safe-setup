@@ -10,9 +10,7 @@ echo "=============================="
 echo " Linux Server Bootstrap Kit"
 echo "=============================="
 
-
 chmod +x security/*.sh
-
 
 echo "[STEP 1] Updating system packages..."
 apt update && apt upgrade -y
@@ -43,21 +41,34 @@ systemctl restart ufw
 systemctl restart fail2ban
 
 
-read -p "[STEP 8] Install backup system? (y/n): " INSTALL_BACKUP
+# ---------------- BACKPORT ----------------
+read -p "[STEP 8] Install backport CLI tool? (y/n): " INSTALL_BACKPORT
+if [[ "$INSTALL_BACKPORT" == "y" ]]; then
+    if [ ! -f tools/backport ]; then
+        echo "❌ tools/backport not found. Skipping backport install."
+    else
+        chmod +x tools/backport
+        cp tools/backport /usr/local/bin/backport
+        echo "✅ backport installed to /usr/local/bin/backport"
+    fi
+fi
+
+
+# ---------------- BACKUP ----------------
+read -p "[STEP 9] Install backup system? (y/n): " INSTALL_BACKUP
 if [[ "$INSTALL_BACKUP" == "y" ]]; then
     chmod +x backup/daily_backup.sh
     (crontab -l 2>/dev/null; echo "0 3 * * * $(pwd)/backup/daily_backup.sh >> /var/log/backup.log 2>&1") | crontab -
-    echo "Backup system installed."
+    echo "✅ Backup system installed."
 fi
 
 
-
-read -p "[STEP 9] Install monitoring alerts? (y/n): " INSTALL_MONITOR
+# ---------------- MONITORING ----------------
+read -p "[STEP 10] Install monitoring alerts? (y/n): " INSTALL_MONITOR
 if [[ "$INSTALL_MONITOR" == "y" ]]; then
     chmod +x monitoring/*.sh
     (crontab -l 2>/dev/null; echo "*/5 * * * * $(pwd)/monitoring/resource_alert.sh") | crontab -
-    echo "Monitoring alerts installed."
+    echo "✅ Monitoring alerts installed."
 fi
-
 
 echo "✅ Server bootstrap completed safely."
