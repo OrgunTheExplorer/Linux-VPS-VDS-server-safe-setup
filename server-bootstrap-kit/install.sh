@@ -48,6 +48,9 @@ if [ ! -f tools/backport.sh ]; then
 else
     chmod +x tools/backport.sh
     cp tools/backport.sh /usr/local/bin/backport.sh
+    mv /usr/local/bin/backport.sh /usr/local/bin/backport
+    chmod +x /usr/local/bin/backport
+
     echo "✅ backport installed to /usr/local/bin/backport"
 fi
 
