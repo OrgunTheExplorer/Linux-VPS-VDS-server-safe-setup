@@ -138,6 +138,9 @@ case "$COMMAND" in
     backup)
         run_backup
         ;;
+    restore)
+        restore_backup
+        ;;
     tcp|udp)
         port_control "$COMMAND" "$ARG1" "$ARG2"
         ;;
@@ -145,6 +148,7 @@ case "$COMMAND" in
         echo "Usage:"
         echo "  backport health"
         echo "  backport backup"
+        echo "  backport restore"
         echo "  backport <tcp|udp> <port> <sender|receiver|sender-receiver>"
         exit 1
         ;;
