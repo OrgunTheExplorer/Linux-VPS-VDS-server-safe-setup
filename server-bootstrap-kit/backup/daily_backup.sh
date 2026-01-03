@@ -1,14 +1,26 @@
 #!/bin/bash
 set -e
 
-BACKUP_DIR="/opt/backups"
-DATE=$(date +%F)
-RETENTION_DAYS=7
+BACKUP_DIR="/var/backups/server"
+TIMESTAMP=$(date +"%Y-%m-%d_%H-%M-%S")
+ARCHIVE_NAME="backup_$TIMESTAMP.tar.gz"
 
-TARGETS="/etc /home /var/www"
+# What to back up
+INCLUDE_DIRS=(
+    "/etc"
+    "/home"
+)
 
+# Create backup directory if missing
 mkdir -p "$BACKUP_DIR"
 
-tar -czf "$BACKUP_DIR/backup-$DATE.tar.gz" $TARGETS
+echo "[$(date)] Backup started"
 
-find "$BACKUP_DIR" -type f -mtime +$RETENTION_DAYS -delete
+tar -czpf "$BACKUP_DIR/$ARCHIVE_NAME" \
+    --exclude=/proc \
+    --exclude=/sys \
+    --exclude=/dev \
+    --exclude=/tmp \
+    "${INCLUDE_DIRS[@]}"
+
+echo "[$(date)] Backup completed: $BACKUP_DIR/$ARCHIVE_NAME"
