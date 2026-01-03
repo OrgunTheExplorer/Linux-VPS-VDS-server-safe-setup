@@ -48,7 +48,7 @@ cp tools/backport.sh /usr/local/bin/backport.sh
 mv /usr/local/bin/backport.sh /usr/local/bin/backport
 chmod +x /usr/local/bin/backport
 
-    echo "✅ backport installed to /usr/local/bin/backport"
+echo "✅ backport installed to /usr/local/bin/backport"
 
 
 
@@ -57,7 +57,12 @@ chmod +x /usr/local/bin/backport
 
 chmod +x backup/daily_backup.sh
 (crontab -l 2>/dev/null; echo "0 3 * * * $(pwd)/backup/daily_backup.sh >> /var/log/backup.log 2>&1") | crontab -
+mkdir -p /opt/server-bootstrap-kit/backup
+cp backup/daily_backup.sh /opt/server-bootstrap-kit/backup/daily_backup.sh
+chmod +x /opt/server-bootstrap-kit/backup/daily_backup.sh
 echo "✅ Backup system installed."
+
+
 
 
 # ---------------- MONITORING ----------------
