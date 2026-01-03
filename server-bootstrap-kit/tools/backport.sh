@@ -81,6 +81,54 @@ port_control() {
 
     echo "Firewall rule applied successfully."
 }
+# ---------------- RESTORE ----------------
+restore_backup() {
+    BACKUP_DIR="/var/backups/server"
+
+    if [ ! -d "$BACKUP_DIR" ]; then
+        echo "❌ Backup directory not found: $BACKUP_DIR"
+        exit 1
+    fi
+
+    mapfile -t BACKUPS < <(ls -1 "$BACKUP_DIR"/backup_*.tar.gz 2>/dev/null)
+
+    if [ "${#BACKUPS[@]}" -eq 0 ]; then
+        echo "❌ No backups found in $BACKUP_DIR"
+        exit 1
+    fi
+
+    echo "===== AVAILABLE BACKUPS ====="
+    for i in "${!BACKUPS[@]}"; do
+        printf "%d) %s\n" "$((i+1))" "$(basename "${BACKUPS[$i]}")"
+    done
+
+    echo
+    read -p "Select backup to restore (number): " CHOICE
+
+    if ! [[ "$CHOICE" =~ ^[0-9]+$ ]] || [ "$CHOICE" -lt 1 ] || [ "$CHOICE" -gt "${#BACKUPS[@]}" ]; then
+        echo "❌ Invalid selection"
+        exit 1
+    fi
+
+    SELECTED_BACKUP="${BACKUPS[$((CHOICE-1))]}"
+
+    echo
+    echo "⚠️ WARNING: This will overwrite /etc and /home"
+    read -p "Are you sure you want to restore? (yes/no): " CONFIRM
+
+    if [[ "$CONFIRM" != "yes" ]]; then
+        echo "Restore cancelled."
+        exit 0
+    fi
+
+    echo "▶ Restoring from: $(basename "$SELECTED_BACKUP")"
+
+    tar -xpf "$SELECTED_BACKUP" -C /
+
+    echo "✅ Restore completed successfully."
+    echo "⚠️ A reboot is recommended."
+}
+
 
 # ---------------- MAIN ----------------
 case "$COMMAND" in
