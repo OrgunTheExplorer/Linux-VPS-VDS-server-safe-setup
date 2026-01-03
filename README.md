@@ -3,13 +3,25 @@
 This repository provides a **step-by-step, minimal and safe bootstrap process**
 for a freshly installed Linux VPS/VDS server.
 
-The goal is:
-- Secure SSH access with **key-based authentication**
-- Disable insecure login methods
-- Configure **UFW** and **Fail2Ban**
-- Apply all changes in a controlled and testable order
+⭐ Features
 
+🔥 Bootstrap and secure a fresh Linux server automatically:
 
+System update & upgrade
+
+SSH setup with key-based authentication
+
+SSH hardening
+
+Firewall setup with UFW
+
+Fail2Ban intrusion prevention
+
+Optional backup scheduling via cron
+
+Optional monitoring alerts
+
+Simple port forwarding CLI (backport) for TCP/UDP services
 
 
 1️⃣ First of all create your ssh key on the local machine 
