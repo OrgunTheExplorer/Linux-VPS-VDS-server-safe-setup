@@ -42,35 +42,29 @@ systemctl restart fail2ban
 
 
 # ---------------- BACKPORT ----------------
-echo "[STEP 8] Installing backport tools..."
-if [ ! -f tools/backport.sh ]; then
-    echo "❌ tools/backport not found. Skipping backport install."
-else
-    chmod +x tools/backport.sh
-    cp tools/backport.sh /usr/local/bin/backport.sh
-    mv /usr/local/bin/backport.sh /usr/local/bin/backport
-    chmod +x /usr/local/bin/backport
+
+chmod +x tools/backport.sh
+cp tools/backport.sh /usr/local/bin/backport.sh
+mv /usr/local/bin/backport.sh /usr/local/bin/backport
+chmod +x /usr/local/bin/backport
 
     echo "✅ backport installed to /usr/local/bin/backport"
-fi
+
 
 
 
 # ---------------- BACKUP ----------------
-read -p "[STEP 9] Install backup system? (y/n): " INSTALL_BACKUP
-if [[ "$INSTALL_BACKUP" == "y" ]]; then
-    chmod +x backup/daily_backup.sh
-    (crontab -l 2>/dev/null; echo "0 3 * * * $(pwd)/backup/daily_backup.sh >> /var/log/backup.log 2>&1") | crontab -
-    echo "✅ Backup system installed."
-fi
+
+chmod +x backup/daily_backup.sh
+(crontab -l 2>/dev/null; echo "0 3 * * * $(pwd)/backup/daily_backup.sh >> /var/log/backup.log 2>&1") | crontab -
+echo "✅ Backup system installed."
 
 
 # ---------------- MONITORING ----------------
-read -p "[STEP 10] Install monitoring alerts? (y/n): " INSTALL_MONITOR
-if [[ "$INSTALL_MONITOR" == "y" ]]; then
-    chmod +x monitoring/*.sh
-    (crontab -l 2>/dev/null; echo "*/5 * * * * $(pwd)/monitoring/resource_alert.sh") | crontab -
-    echo "✅ Monitoring alerts installed."
-fi
+
+chmod +x monitoring/*.sh
+(crontab -l 2>/dev/null; echo "*/5 * * * * $(pwd)/monitoring/resource_alert.sh") | crontab -
+echo "✅ Monitoring alerts installed."
+
 
 echo "✅ Server bootstrap completed safely."
