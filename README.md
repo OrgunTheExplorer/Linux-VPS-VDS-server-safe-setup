@@ -70,8 +70,4 @@ sudo ./install.sh
 7️⃣ Choose to enable or disable the ipv6
 
 
-8️⃣ Choose to enable or disable backup
-
-
-9️⃣ Choose to enable or disable monitoring tools
 
