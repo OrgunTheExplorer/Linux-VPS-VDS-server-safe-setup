@@ -232,7 +232,7 @@ case "$COMMAND" in
         echo "  backport health"
         echo "  backport backup"
         echo "  backport restore"
-        echo "  backport <tcp|udp> <port> <sender|receiver|sender-receiver>"
+        echo "  backport <tcp|udp> <port|status|remove> <sender|sender-receiver>"
         exit 1
         ;;
 esac
