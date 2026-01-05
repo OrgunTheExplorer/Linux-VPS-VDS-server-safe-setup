@@ -48,6 +48,14 @@ cp tools/backport.sh /usr/local/bin/backport.sh
 mv /usr/local/bin/backport.sh /usr/local/bin/backport
 chmod +x /usr/local/bin/backport
 
+
+mkdir -p /var/lib/backport
+touch /var/lib/backport/tunnels.db
+
+# Security: only root can modify
+chmod 700 /var/lib/backport
+chmod 600 /var/lib/backport/tunnels.db
+
 echo "✅ backport installed to /usr/local/bin/backport"
 
 
