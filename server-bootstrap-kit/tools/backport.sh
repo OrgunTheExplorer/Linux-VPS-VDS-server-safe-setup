@@ -48,39 +48,122 @@ run_backup() {
 
 # ---------------- PORT ----------------
 port_control() {
-    PROTOCOL="$1"
-    PORT="$2"
-    MODE="$3"
+    ACTION="$1"   # tcp
+    ARG1="$2"     # port | status | remove
+    ARG2="$3"     # mode | index
+    ARG3="$4"
 
-    if [[ "$PROTOCOL" != "tcp" && "$PROTOCOL" != "udp" ]]; then
-        echo "Protocol must be tcp or udp"
-        exit 1
+    STATE_DIR="/var/lib/backport"
+    DB="$STATE_DIR/tunnels.db"
+
+    mkdir -p "$STATE_DIR"
+
+    # ---------- STATUS ----------
+    if [[ "$ARG1" == "status" ]]; then
+        if [ ! -f "$DB" ]; then
+            echo "No active tunnels."
+            return
+        fi
+
+        echo "ID | PROTO | PORT | MODE | DESTINATION"
+        echo "--------------------------------------"
+        while IFS="|" read -r ID PROTO PORT MODE USER IP PID; do
+            echo "$ID | $PROTO | $PORT | $MODE | $USER@$IP (PID $PID)"
+        done < "$DB"
+        return
     fi
 
-    if ! [[ "$PORT" =~ ^[0-9]+$ ]] || [ "$PORT" -gt 65535 ]; then
-        echo "Invalid port number"
-        exit 1
-    fi
+    # ---------- REMOVE ----------
+    if [[ "$ARG1" == "remove" ]]; then
+        INDEX="$ARG2"
 
-    case "$MODE" in
-        sender)
-            ufw allow out "$PORT/$PROTOCOL"
-            ;;
-        receiver)
-            ufw allow "$PORT/$PROTOCOL"
-            ;;
-        sender-receiver)
-            ufw allow "$PORT/$PROTOCOL"
-            ufw allow out "$PORT/$PROTOCOL"
-            ;;
-        *)
-            echo "Mode must be sender, receiver or sender-receiver"
+        if [ ! -f "$DB" ]; then
+            echo "No tunnels to remove."
             exit 1
-            ;;
-    esac
+        fi
 
-    echo "Firewall rule applied successfully."
+        LINE=$(sed -n "${INDEX}p" "$DB")
+        [ -z "$LINE" ] && { echo "Invalid index"; exit 1; }
+
+        IFS="|" read -r ID PROTO PORT MODE USER IP PID <<< "$LINE"
+
+        if [[ "$MODE" == "sender" ]]; then
+            kill "$PID" 2>/dev/null || true
+        fi
+
+        if [[ "$MODE" == "sender-receiver" ]]; then
+            sed -i 's/^GatewayPorts yes/GatewayPorts no/' /etc/ssh/sshd_config
+            sed -i 's/^AllowTcpForwarding yes/AllowTcpForwarding no/' /etc/ssh/sshd_config
+            systemctl restart sshd
+        fi
+
+        sed -i "${INDEX}d" "$DB"
+        echo "Tunnel removed."
+        return
+    fi
+
+    # ---------- CREATE ----------
+    PROTOCOL="$ACTION"
+    PORT="$ARG1"
+    MODE="$ARG2"
+
+    if [[ "$PROTOCOL" != "tcp" ]]; then
+        echo "Only tcp supported for SSH forwarding"
+        exit 1
+    fi
+
+    if ! [[ "$PORT" =~ ^[0-9]+$ ]]; then
+        echo "Invalid port"
+        exit 1
+    fi
+
+    # ---------- SENDER ----------
+    if [[ "$MODE" == "sender" ]]; then
+
+        if [ -f "$DB" ]; then
+            echo "Saved destinations:"
+            awk -F"|" '{print NR ") " $5 "@" $6}' "$DB"
+            echo "0) New destination"
+        else
+            echo "0) New destination"
+        fi
+
+        read -p "Select destination: " CHOICE
+
+        if [[ "$CHOICE" != "0" ]]; then
+            LINE=$(sed -n "${CHOICE}p" "$DB")
+            IFS="|" read -r _ _ _ _ USER IP _ <<< "$LINE"
+        else
+            read -p "VPS User: " USER
+            read -p "VPS IP: " IP
+        fi
+
+        ssh -N -R "$PORT:127.0.0.1:$PORT" "$USER@$IP" &
+        PID=$!
+
+        ID=$(($(wc -l < "$DB" 2>/dev/null || echo 0) + 1))
+        echo "$ID|tcp|$PORT|sender|$USER|$IP|$PID" >> "$DB"
+
+        echo "SSH tunnel started (PID $PID)"
+        return
+    fi
+
+    # ---------- SENDER-RECEIVER ----------
+    if [[ "$MODE" == "sender-receiver" ]]; then
+        sed -i 's/^#\?GatewayPorts.*/GatewayPorts yes/' /etc/ssh/sshd_config
+        sed -i 's/^#\?AllowTcpForwarding.*/AllowTcpForwarding yes/' /etc/ssh/sshd_config
+        systemctl restart sshd
+
+        ID=$(($(wc -l < "$DB" 2>/dev/null || echo 0) + 1))
+        echo "$ID|tcp|$PORT|sender-receiver|local|localhost|0" >> "$DB"
+
+        echo "Server forwarding enabled."
+        return
+    fi
+
+    echo "Invalid mode"
 }
+
 # ---------------- RESTORE ----------------
 restore_backup() {
     BACKUP_DIR="/var/backups/server"
