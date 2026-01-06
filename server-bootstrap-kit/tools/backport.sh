@@ -13,22 +13,31 @@ ARG2="$3"
 ARG3="$4"
 
 # ---------------- HEALTH ----------------
+GREEN="\e[32m"
+BLUE="\e[34m"
+RESET="\e[0m"
+
 health_check() {
-    echo "===== SYSTEM HEALTH ====="
-    echo "Date: $(date)"
+    clear
+    echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${RESET}"
+    echo -e "${GREEN} 🖥️  SYSTEM HEALTH STATUS${RESET}"
+    echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${RESET}"
+    echo " 📅 Date: $(date)"
     echo
 
-    echo "CPU:"
+    echo -e "${GREEN}🔧 CPU LOAD${RESET}"
     uptime
     echo
 
-    echo "Memory:"
+    echo -e "${GREEN}🧠 MEMORY USAGE${RESET}"
     free -h
     echo
 
-    echo "Disk:"
+    echo -e "${GREEN}💾 DISK USAGE (/ )${RESET}"
     df -h /
     echo
+
+    echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${RESET}"
 }
 
 # ---------------- BACKUP ----------------
