@@ -20,20 +20,20 @@ RESET="\e[0m"
 health_check() {
     clear
     echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${RESET}"
-    echo -e "${GREEN} 🖥️  SYSTEM HEALTH STATUS${RESET}"
+    echo -e "${GREEN}   SYSTEM HEALTH STATUS${RESET}"
     echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${RESET}"
     echo " 📅 Date: $(date)"
     echo
 
-    echo -e "${GREEN}🔧 CPU LOAD${RESET}"
+    echo -e "${GREEN} CPU LOAD${RESET}"
     uptime
     echo
 
-    echo -e "${GREEN}🧠 MEMORY USAGE${RESET}"
+    echo -e "${GREEN} MEMORY USAGE${RESET}"
     free -h
     echo
 
-    echo -e "${GREEN}💾 DISK USAGE (/ )${RESET}"
+    echo -e "${GREEN} DISK USAGE (/ )${RESET}"
     df -h /
     echo
 
@@ -178,14 +178,14 @@ restore_backup() {
     BACKUP_DIR="/var/backups/server"
 
     if [ ! -d "$BACKUP_DIR" ]; then
-        echo "❌ Backup directory not found: $BACKUP_DIR"
+        echo " Backup directory not found: $BACKUP_DIR"
         exit 1
     fi
 
     mapfile -t BACKUPS < <(ls -1 "$BACKUP_DIR"/backup_*.tar.gz 2>/dev/null)
 
     if [ "${#BACKUPS[@]}" -eq 0 ]; then
-        echo "❌ No backups found in $BACKUP_DIR"
+        echo " No backups found in $BACKUP_DIR"
         exit 1
     fi
 
@@ -198,14 +198,14 @@ restore_backup() {
     read -p "Select backup to restore (number): " CHOICE
 
     if ! [[ "$CHOICE" =~ ^[0-9]+$ ]] || [ "$CHOICE" -lt 1 ] || [ "$CHOICE" -gt "${#BACKUPS[@]}" ]; then
-        echo "❌ Invalid selection"
+        echo " Invalid selection"
         exit 1
     fi
 
     SELECTED_BACKUP="${BACKUPS[$((CHOICE-1))]}"
 
     echo
-    echo "⚠️ WARNING: This will overwrite /etc and /home"
+    echo " WARNING: This will overwrite /etc and /home"
     read -p "Are you sure you want to restore? (yes/no): " CONFIRM
 
     if [[ "$CONFIRM" != "yes" ]]; then
@@ -217,8 +217,8 @@ restore_backup() {
 
     tar -xpf "$SELECTED_BACKUP" -C /
 
-    echo "✅ Restore completed successfully."
-    echo "⚠️ A reboot is recommended."
+    echo " Restore completed successfully."
+    echo " A reboot is recommended."
 }
 
 
