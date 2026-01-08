@@ -56,7 +56,7 @@ touch /var/lib/backport/tunnels.db
 chmod 700 /var/lib/backport
 chmod 600 /var/lib/backport/tunnels.db
 
-echo "✅ backport installed to /usr/local/bin/backport"
+echo "backport installed to /usr/local/bin/backport"
 
 
 
@@ -68,7 +68,7 @@ chmod +x backup/daily_backup.sh
 mkdir -p /opt/server-bootstrap-kit/backup
 cp backup/daily_backup.sh /opt/server-bootstrap-kit/backup/daily_backup.sh
 chmod +x /opt/server-bootstrap-kit/backup/daily_backup.sh
-echo "✅ Backup system installed."
+echo "Backup system installed."
 
 
 
@@ -77,7 +77,7 @@ echo "✅ Backup system installed."
 
 chmod +x monitoring/*.sh
 (crontab -l 2>/dev/null; echo "*/5 * * * * $(pwd)/monitoring/resource_alert.sh") | crontab -
-echo "✅ Monitoring alerts installed."
+echo "Monitoring alerts installed."
 
 
-echo "✅ Server bootstrap completed safely."
+echo "Server bootstrap completed safely."
