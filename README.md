@@ -3,9 +3,9 @@
 This repository provides a **step-by-step, minimal and safe bootstrap process**
 for a freshly installed Linux VPS/VDS server.
 
-⭐ Features
+Features
 
-🔥 Bootstrap and secure a fresh Linux server automatically:
+Bootstrap and secure a fresh Linux server automatically:
 
 System update & upgrade
 
